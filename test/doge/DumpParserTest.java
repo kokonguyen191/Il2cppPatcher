@@ -68,26 +68,26 @@ public class DumpParserTest {
 		// Normal function
 		dp.addFunction("private static void overrideResistIcons(EnemyParams targetParams); // 0x117BC04");
 		hm.put(0x117BC04, "overrideResistIcons");
-		assertEquals(hm, dp.map);
+		assertEquals(hm, dp.getMap());
 
 		// Not a function
 		dp.addFunction("public const ShieldType Leftward = 5; // 0x0");
-		assertEquals(hm, dp.map);
+		assertEquals(hm, dp.getMap());
 
 		// Function not needed
 		dp.addFunction("private static bool assignIfValid(string result, string value); // 0x117DD5C");
-		assertEquals(hm, dp.map);
+		assertEquals(hm, dp.getMap());
 
 		// Another function
 		dp.addFunction("public List`1<UnitBase> get_childUnits(); // 0x2065DE8");
 		hm.put(0x2065DE8, "get_childUnits");
-		assertEquals(hm, dp.map);
+		assertEquals(hm, dp.getMap());
 
 		// A weird formatted function
 		dp.addFunction(
 				"        private static float getListValue(List`1<float> values, int index, optional float defaultValue); // 0x1F741DC\\r\\n");
 		hm.put(0x1F741DC, "getListValue");
-		assertEquals(hm, dp.map);
+		assertEquals(hm, dp.getMap());
 
 		f.delete();
 	}

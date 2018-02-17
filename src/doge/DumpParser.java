@@ -25,7 +25,7 @@ public class DumpParser {
 
 	private String filePath;
 	private BufferedReader br;
-	public HashMap<Integer, String> map;
+	private HashMap<Integer, String> map;
 	public HashSet<String> functionsNeeded;
 
 	/**
@@ -36,7 +36,7 @@ public class DumpParser {
 	 */
 	DumpParser(String filePath) {
 		this.filePath = filePath;
-		map = new HashMap<Integer, String>();
+		setMap(new HashMap<Integer, String>());
 		functionsNeeded = new HashSet<String>();
 	}
 
@@ -101,7 +101,7 @@ public class DumpParser {
 		int functionAddress = DumpParser.parseFunctionAddress(line);
 
 		if (functionsNeeded.contains(functionName)) {
-			map.put(functionAddress, functionName);
+			getMap().put(functionAddress, functionName);
 		}
 	}
 
@@ -142,5 +142,14 @@ public class DumpParser {
 		} else {
 			return FUNCTION_ADDRESS_NOT_FOUND_DEFAULT_VALUE;
 		}
+	}
+
+	
+	public HashMap<Integer, String> getMap() {
+		return map;
+	}
+
+	public void setMap(HashMap<Integer, String> map) {
+		this.map = map;
 	}
 }
