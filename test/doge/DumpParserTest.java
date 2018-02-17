@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 
 import org.junit.Test;
 
@@ -61,34 +60,34 @@ public class DumpParserTest {
 		f.createNewFile();
 
 		DumpParser dp = new DumpParser("tempEmptyTestFile");
-		HashSet<Integer> hs = new HashSet<Integer>();
+		HashMap<Integer, String> hm = new HashMap<Integer, String>();
 		dp.functionsNeeded.add("overrideResistIcons");
 		dp.functionsNeeded.add("get_childUnits");
 		dp.functionsNeeded.add("getListValue");
 
 		// Normal function
 		dp.addFunction("private static void overrideResistIcons(EnemyParams targetParams); // 0x117BC04");
-		hs.add(0x117BC04);
-		assertEquals(hs, dp.getFunctionAddresses());
+		hm.put(0x117BC04, "overrideResistIcons");
+		assertEquals(hm, dp.getMap());
 
 		// Not a function
 		dp.addFunction("public const ShieldType Leftward = 5; // 0x0");
-		assertEquals(hs, dp.getFunctionAddresses());
+		assertEquals(hm, dp.getMap());
 
 		// Function not needed
 		dp.addFunction("private static bool assignIfValid(string result, string value); // 0x117DD5C");
-		assertEquals(hs, dp.getFunctionAddresses());
+		assertEquals(hm, dp.getMap());
 
 		// Another function
 		dp.addFunction("public List`1<UnitBase> get_childUnits(); // 0x2065DE8");
-		hs.add(0x2065DE8);
-		assertEquals(hs, dp.getFunctionAddresses());
+		hm.put(0x2065DE8, "get_childUnits");
+		assertEquals(hm, dp.getMap());
 
 		// A weird formatted function
 		dp.addFunction(
 				"        private static float getListValue(List`1<float> values, int index, optional float defaultValue); // 0x1F741DC\\r\\n");
-		hs.add(0x1F741DC);
-		assertEquals(hs, dp.getFunctionAddresses());
+		hm.put(0x1F741DC, "getListValue");
+		assertEquals(hm, dp.getMap());
 
 		f.delete();
 	}

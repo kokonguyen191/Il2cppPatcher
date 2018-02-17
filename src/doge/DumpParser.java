@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,7 +25,7 @@ public class DumpParser {
 
 	private String filePath;
 	private BufferedReader br;
-	private HashSet<Integer> functionAddresses;
+	private HashMap<Integer, String> map;
 	public HashSet<String> functionsNeeded;
 
 	/**
@@ -37,7 +36,7 @@ public class DumpParser {
 	 */
 	DumpParser(String filePath) {
 		this.filePath = filePath;
-		functionAddresses = new HashSet<Integer>();
+		setMap(new HashMap<Integer, String>());
 		functionsNeeded = new HashSet<String>();
 	}
 
@@ -102,7 +101,7 @@ public class DumpParser {
 		int functionAddress = DumpParser.parseFunctionAddress(line);
 
 		if (functionsNeeded.contains(functionName)) {
-			functionAddresses.add(functionAddress);
+			getMap().put(functionAddress, functionName);
 		}
 	}
 
@@ -146,7 +145,11 @@ public class DumpParser {
 	}
 
 	
-	public HashSet<Integer> getFunctionAddresses() {
-		return functionAddresses;
+	public HashMap<Integer, String> getMap() {
+		return map;
+	}
+
+	public void setMap(HashMap<Integer, String> map) {
+		this.map = map;
 	}
 }
