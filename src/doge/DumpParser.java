@@ -21,6 +21,7 @@ public class DumpParser {
 	private static final Pattern FUNCTION_ADDRESS_REGEX = Pattern.compile("(?<=\\/\\/ 0x)[\\dA-F]*");
 	private static final String FUNCTION_NAME_NOT_FOUND_DEFAULT_VALUE = "";
 	private static final int FUNCTION_ADDRESS_NOT_FOUND_DEFAULT_VALUE = -1;
+	private static final String DEFAULT_DUMP_FILE_PATH = "dump.cs";
 
 	private String filePath;
 	private BufferedReader br;
@@ -37,6 +38,13 @@ public class DumpParser {
 		this.filePath = filePath;
 		map = new HashMap<Integer, String>();
 		functionsNeeded = new HashSet<String>();
+	}
+
+	/**
+	 * Lazy constructor
+	 */
+	DumpParser() {
+		this(DEFAULT_DUMP_FILE_PATH);
 	}
 
 	/**

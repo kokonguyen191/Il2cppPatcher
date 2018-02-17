@@ -13,51 +13,45 @@ public class DumpParserTest {
 	@Test
 	public void testParseFunctionName() {
 		// Normal function
-		assertEquals(
-				DumpParser.parseFunctionName(
-						"private static void overrideResistIcons(EnemyParams targetParams); // 0x117BC04"),
-				"overrideResistIcons");
+		assertEquals("overrideResistIcons", DumpParser
+				.parseFunctionName("private static void overrideResistIcons(EnemyParams targetParams); // 0x117BC04"));
 
 		// Not a function
-		assertEquals(DumpParser.parseFunctionName("public const ShieldType Leftward = 5; // 0x0"), "");
+		assertEquals("", DumpParser.parseFunctionName("public const ShieldType Leftward = 5; // 0x0"));
 
 		// Another function
-		assertEquals(
-				DumpParser.parseFunctionName(
-						"private static bool assignIfValid(string result, string value); // 0x117DD5C"),
-				"assignIfValid");
+		assertEquals("assignIfValid", DumpParser
+				.parseFunctionName("private static bool assignIfValid(string result, string value); // 0x117DD5C"));
 
 		// Function with some weird chars
-		assertEquals(DumpParser.parseFunctionName("public List`1<UnitBase> get_childUnits(); // 0x2065DE8"),
-				"get_childUnits");
+		assertEquals("get_childUnits",
+				DumpParser.parseFunctionName("public List`1<UnitBase> get_childUnits(); // 0x2065DE8"));
 
 		// Very weird function and has some extra spaces at the start
-		assertEquals(DumpParser.parseFunctionName(
-				"	private static float getListValue(List`1<float> values, int index, optional float defaultValue); // 0x1F741DC\r\n"),
-				"getListValue");
+		assertEquals("getListValue", DumpParser.parseFunctionName(
+				"	private static float getListValue(List`1<float> values, int index, optional float defaultValue); // 0x1F741DC\r\n"));
 	}
 
 	@Test
 	public void testParseFunctionAddress() {
 		// Normal function
-		assertEquals(DumpParser.parseFunctionAddress(
-				"private static void overrideResistIcons(EnemyParams targetParams); // 0x117BC04"), 0x117BC04);
+		assertEquals(0x117BC04, DumpParser.parseFunctionAddress(
+				"private static void overrideResistIcons(EnemyParams targetParams); // 0x117BC04"));
 
 		// Not a function
-		assertEquals(DumpParser.parseFunctionAddress("public const ShieldType Leftward = 5; // 0x0"), 0x0);
+		assertEquals(0x2, DumpParser.parseFunctionAddress("public const ShieldType Leftward = 5; // 0x2"));
 
 		// Another function
-		assertEquals(DumpParser.parseFunctionAddress(
-				"private static bool assignIfValid(string result, string value); // 0x117DD5C"), 0x117DD5C);
+		assertEquals(0x117DD5C, DumpParser
+				.parseFunctionAddress("private static bool assignIfValid(string result, string value); // 0x117DD5C"));
 
 		// Function with some weird chars
-		assertEquals(DumpParser.parseFunctionAddress("public List`1<UnitBase> get_childUnits(); // 0x2065DE8"),
-				0x2065DE8);
+		assertEquals(0x2065DE8,
+				DumpParser.parseFunctionAddress("public List`1<UnitBase> get_childUnits(); // 0x2065DE8"));
 
 		// Very weird function and has some extra spaces at the start
-		assertEquals(DumpParser.parseFunctionAddress(
-				"	private static float getListValue(List`1<float> values, int index, optional float defaultValue); // 0x1F741DC\r\n"),
-				0x1F741DC);
+		assertEquals(0x1F741DC, DumpParser.parseFunctionAddress(
+				"	private static float getListValue(List`1<float> values, int index, optional float defaultValue); // 0x1F741DC\r\n"));
 	}
 
 	@Test
@@ -74,26 +68,26 @@ public class DumpParserTest {
 		// Normal function
 		dp.addFunction("private static void overrideResistIcons(EnemyParams targetParams); // 0x117BC04");
 		hm.put(0x117BC04, "overrideResistIcons");
-		assertEquals(dp.map, hm);
+		assertEquals(hm, dp.map);
 
 		// Not a function
 		dp.addFunction("public const ShieldType Leftward = 5; // 0x0");
-		assertEquals(dp.map, hm);
+		assertEquals(hm, dp.map);
 
 		// Function not needed
 		dp.addFunction("private static bool assignIfValid(string result, string value); // 0x117DD5C");
-		assertEquals(dp.map, hm);
+		assertEquals(hm, dp.map);
 
 		// Another function
 		dp.addFunction("public List`1<UnitBase> get_childUnits(); // 0x2065DE8");
 		hm.put(0x2065DE8, "get_childUnits");
-		assertEquals(dp.map, hm);
+		assertEquals(hm, dp.map);
 
 		// A weird formatted function
 		dp.addFunction(
 				"        private static float getListValue(List`1<float> values, int index, optional float defaultValue); // 0x1F741DC\\r\\n");
 		hm.put(0x1F741DC, "getListValue");
-		assertEquals(dp.map, hm);
+		assertEquals(hm, dp.map);
 
 		f.delete();
 	}
