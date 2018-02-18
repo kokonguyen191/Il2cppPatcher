@@ -121,19 +121,4 @@ public class ModificationList {
                 || (other instanceof ModificationList // instanceof handles nulls
                 && this.listOfMods.equals(((ModificationList) other).listOfMods));
     }
-
-    public static void main(String[] args) throws IOException {
-        String filePath = "E:/temp/Android_Fuckers/AGA/modding_guide_new.txt";
-        BufferedReader br = new BufferedReader(
-                new InputStreamReader(new FileInputStream(new File(filePath))));
-        String line;
-        StringBuilder sb = new StringBuilder();
-        while ((line = br.readLine()) != null) {
-            sb.append(line);
-            sb.append(LR);
-        }
-        br.close();
-        ModificationList ml = ModificationList.parseFromFile(filePath);
-        System.out.println(ml.listOfFunctions);
-    }
 }
