@@ -22,6 +22,4 @@
 hs_err_pid*
 
 # Project files
-dump.cs
-libil2cpp.so
-test.txt
+example/*
