@@ -3,7 +3,6 @@ package doge.parser;
 import doge.data.Function;
 import doge.data.ModificationList;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
