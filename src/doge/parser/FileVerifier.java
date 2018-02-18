@@ -12,6 +12,14 @@ import java.util.HashMap;
 
 public class FileVerifier {
 
+    /**
+     * Check if the file matches the original state of ALL MODS
+     *
+     * @param fh RandomAccessFile for better performance
+     * @param listOfNewFunctions can be gotten from DumpParser
+     * @param listOfMods a ModificationList object
+     * @return true if they match, else false
+     */
     public static boolean isFileAndModListMatched(RandomAccessFile fh,
             HashMap<String, Function> listOfNewFunctions,
             ModificationList listOfMods) throws IOException {
@@ -19,18 +27,28 @@ public class FileVerifier {
 
         ArrayList<Modification> listOfModificationObjects = listOfMods.getListOfMods();
         for (Modification mod : listOfModificationObjects) {
-            boolean fileAndModMatch = FileVerifier.isFileAndModMatched(fh, listOfNewFunctions, mod);
+            boolean fileAndModMatch = FileVerifier
+                    .isFileAndOldModMatched(fh, listOfNewFunctions, mod);
             result = result && fileAndModMatch;
         }
 
         return result;
     }
 
-    public static boolean isFileAndModMatched(RandomAccessFile fh,
+    /**
+     * Check if the file matches the original state of a mod before applying a mod
+     * MUST ENSURE THIS TO BE TRUE, IF NOT, PATCHES WILL BE APPLIED INCORRECTLY
+     *
+     * @param fh RandomAccessFile for better performance
+     * @param listOfNewFunctions can be gotten from DumpParser
+     * @param mod a Modification object
+     * @return true if they match, else false
+     */
+    public static boolean isFileAndOldModMatched(RandomAccessFile fh,
             HashMap<String, Function> listOfNewFunctions, Modification mod) throws IOException {
         for (Patch patch : mod.getPatches()) {
             boolean fileAndPatchMatch = FileVerifier
-                    .isFileAndPatchMatched(fh, listOfNewFunctions, patch);
+                    .isFileAndOldPatchMatched(fh, listOfNewFunctions, patch);
             if (!fileAndPatchMatch) {
                 System.out.println("Mismatch at mod option: " + mod.getModName());
                 return false;
@@ -39,7 +57,30 @@ public class FileVerifier {
         return true;
     }
 
-    public static boolean isFileAndPatchMatched(RandomAccessFile fh,
+    /**
+     * Check if the file matches the original state of a patch before applying a mod
+     *
+     * @param fh RandomAccessFile for better performance
+     * @param listOfNewFunctions can be gotten from DumpParser
+     * @param patch a Patch object
+     * @return true if they match, else false
+     */
+    public static boolean isFileAndOldPatchMatched(RandomAccessFile fh,
+            HashMap<String, Function> listOfNewFunctions, Patch patch) throws IOException {
+        int newOffset = FilePatcher.getNewOffset(listOfNewFunctions, patch);
+        return FileVerifier
+                .isFileAndBytesMatched(fh, newOffset, patch.getLength(), patch.getOriginalBytes());
+    }
+
+    /**
+     * Check if the file matches a mod after it has been applied
+     *
+     * @param fh RandomAccessFile for better performance
+     * @param listOfNewFunctions can be gotten from DumpParser
+     * @param patch a Patch object
+     * @return true if they match, else false
+     */
+    public static boolean isFileAndNewPatchMatched(RandomAccessFile fh,
             HashMap<String, Function> listOfNewFunctions, Patch patch) throws IOException {
         int newOffset = FilePatcher.getNewOffset(listOfNewFunctions, patch);
         return FileVerifier
@@ -53,7 +94,7 @@ public class FileVerifier {
      * @param location starting location of the check
      * @param length the length of the check
      * @param bytes the series of byte to check
-     * @return true of they match, else false
+     * @return true if they match, else false
      */
     public static boolean isFileAndBytesMatched(RandomAccessFile fh, int location, int length,
             byte[] bytes)
