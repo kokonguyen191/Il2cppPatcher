@@ -17,10 +17,7 @@ public class Main {
     private static final int MOD_INDEX = 2;
 
     public static void main(String... launchArgs) {
-        new Main().run(new String[]{"E:/temp/Android_Fuckers/Workbench/AGA/mod/libil2cpp.so",
-                "E:/temp/Android_Fuckers/Workbench/dump.cs",
-                "E:/temp/Android_Fuckers/AGA/modding_guide_new.txt"});
-//        new Main().run(launchArgs);
+        new Main().run(launchArgs);
     }
 
     public void run(String[] launchArgs) {
