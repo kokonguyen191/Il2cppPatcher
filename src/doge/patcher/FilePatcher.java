@@ -27,6 +27,9 @@ public class FilePatcher {
                 .isFileAndOldModMatched(fh, listOfNewFunctions, mod);
 
         if (fileAndNewModMatched || fileAndOldModMatched) {
+            if (fileAndNewModMatched) {
+                System.out.println("Already modded: " + mod.getModName());
+            }
             ArrayList<Patch> patches = mod.getPatches();
             for (Patch patch : patches) {
                 FilePatcher.writePatch(fh, listOfNewFunctions, patch);

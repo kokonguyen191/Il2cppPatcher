@@ -41,7 +41,7 @@ public class ModificationListTest {
                 + "public float get_CoolTime(); // 0xA57688\n"
                 + "00A57744\t0x1\t10 \t00 \n"
                 + "00A57746\t0x1\t00 \tB4 \n"
-                + "00A57749\t0x2\t1A BF \t0A 20 "), new ModificationList("tempEmptyTestFile"));
+                + "00A57749\t0x2\t1A BF \t0A 20 "), ModificationList.parseFromFile("tempEmptyTestFile"));
 
         f.delete();
     }

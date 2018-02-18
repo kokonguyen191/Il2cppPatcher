@@ -26,6 +26,13 @@ public class ModificationList {
      */
     public ModificationList(ArrayList<Modification> listOfMods) {
         this.listOfMods = listOfMods;
+        listOfFunctions = new HashSet<String>();
+        for (Modification mod: listOfMods) {
+            ArrayList<Patch> patches = mod.getPatches();
+            for (Patch patch : patches) {
+                listOfFunctions.add(patch.getFunction().getFunctionName());
+            }
+        }
     }
 
     /**
@@ -33,7 +40,7 @@ public class ModificationList {
      *
      * @param filePath file path of a txt file that contains all the modifications
      */
-    public ModificationList(String filePath) {
+    public static ModificationList parseFromFile(String filePath) {
         try {
             BufferedReader br = new BufferedReader(
                     new InputStreamReader(new FileInputStream(new File(filePath))));
@@ -44,12 +51,13 @@ public class ModificationList {
                 sb.append(LR);
             }
             br.close();
-            this.listOfMods = ModificationList.parseListOfMods(sb.toString()).getListOfMods();
+            return ModificationList.parseListOfMods(sb.toString());
         } catch (IOException ioe) {
             System.err.println(
                     "Something unexpected happened while trying to read from the mod file");
             ioe.printStackTrace();
         }
+        return null;
     }
 
     /**
@@ -61,22 +69,15 @@ public class ModificationList {
     public static ModificationList parseListOfMods(String input) {
         if (!input.trim().equals("")) {
             ArrayList<Modification> listToAdd = new ArrayList<Modification>();
-            HashSet<String> listOfFunctions = new HashSet<String>();
 
             String[] blocks = input.split(MOD_OPTION_DELIMITER_REGEX);
             for (String block : blocks) {
                 Modification mod = Modification.parseMod(block);
                 if (mod != null) {
                     listToAdd.add(mod);
-                    ArrayList<Patch> patches = mod.getPatches();
-                    for (Patch patch : patches) {
-                        listOfFunctions.add(patch.getFunction().getFunctionName());
-                    }
                 }
             }
-            ModificationList resultList = new ModificationList(listToAdd);
-            resultList.setListOfFunctions(listOfFunctions);
-            return resultList;
+            return new ModificationList(listToAdd);
         } else {
             return null;
         }
@@ -119,5 +120,20 @@ public class ModificationList {
         return other == this // short circuit if same object
                 || (other instanceof ModificationList // instanceof handles nulls
                 && this.listOfMods.equals(((ModificationList) other).listOfMods));
+    }
+
+    public static void main(String[] args) throws IOException {
+        String filePath = "E:/temp/Android_Fuckers/AGA/modding_guide_new.txt";
+        BufferedReader br = new BufferedReader(
+                new InputStreamReader(new FileInputStream(new File(filePath))));
+        String line;
+        StringBuilder sb = new StringBuilder();
+        while ((line = br.readLine()) != null) {
+            sb.append(line);
+            sb.append(LR);
+        }
+        br.close();
+        ModificationList ml = ModificationList.parseFromFile(filePath);
+        System.out.println(ml.listOfFunctions);
     }
 }
