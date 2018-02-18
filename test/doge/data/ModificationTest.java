@@ -2,7 +2,7 @@ package doge.data;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import org.junit.Test;
 
 public class ModificationTest {
@@ -13,7 +13,7 @@ public class ModificationTest {
                 .parseFunction("public float get_SkillPointNormalizedRatio(); // 0x97AC94");
         Patch patch1 = Patch.parsePatch("0097AD34\t0x1\t08 \t00", function);
         Patch patch2 = Patch.parsePatch("0097AD36\t0x1\t89 \tB7", function);
-        LinkedList<Patch> patches = new LinkedList<Patch>();
+        ArrayList<Patch> patches = new ArrayList<Patch>();
         patches.add(patch1);
         patches.add(patch2);
 
@@ -32,7 +32,7 @@ public class ModificationTest {
         Function function2 = Function.parseFunction(
                 "public void Shot(UnitBase sender, UnitActionLockOnOwnerType lockOnOwnerType, int shotIdx, int commandIdx, float limitAngle, bool deviation, Vector3 offsetPosition, Quaternion offsetRotation, float effectScale); // 0x115ED90");
         Patch patch2 = Patch.parsePatch("0115ED90\t0x4\tF0 4F 2D E9 \t1E FF 2F E1 ", function2);
-        LinkedList<Patch> patches = new LinkedList<Patch>();
+        ArrayList<Patch> patches = new ArrayList<Patch>();
         patches.add(patch1);
         patches.add(patch2);
 

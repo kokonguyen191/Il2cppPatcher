@@ -1,7 +1,7 @@
 package doge.data;
 
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 
 /**
  * Contain all Modification. The user will provide this to the application.
@@ -10,7 +10,7 @@ public class ModificationList {
 
     public static final String MOD_OPTION_DELIMITER_REGEX = "#[\\s]+";
 
-    private LinkedList<Modification> listOfMods;
+    private ArrayList<Modification> listOfMods;
     private HashSet<String> listOfFunctions;
 
     /**
@@ -18,7 +18,7 @@ public class ModificationList {
      *
      * @param listOfMods a LinkedList of Modification objects
      */
-    public ModificationList(LinkedList<Modification> listOfMods) {
+    public ModificationList(ArrayList<Modification> listOfMods) {
         this.listOfMods = listOfMods;
     }
 
@@ -30,7 +30,7 @@ public class ModificationList {
      */
     public static ModificationList parseListOfMods(String input) {
         if (!input.trim().equals("")) {
-            LinkedList<Modification> listToAdd = new LinkedList<Modification>();
+            ArrayList<Modification> listToAdd = new ArrayList<Modification>();
             HashSet<String> listOfFunctions = new HashSet<String>();
 
             String[] blocks = input.split(MOD_OPTION_DELIMITER_REGEX);
@@ -38,7 +38,7 @@ public class ModificationList {
                 Modification mod = Modification.parseMod(block);
                 if (mod != null) {
                     listToAdd.add(mod);
-                    LinkedList<Patch> patches = mod.getPatches();
+                    ArrayList<Patch> patches = mod.getPatches();
                     for (Patch patch : patches) {
                         listOfFunctions.add(patch.getFunction().getFunctionName());
                     }
@@ -62,7 +62,17 @@ public class ModificationList {
         return listOfFunctions.contains(functionName);
     }
 
-    public LinkedList<Modification> getListOfMods() {
+    /**
+     * Return the modification at given index
+     *
+     * @param index index of Modification object
+     * @return the Modification object
+     */
+    public Modification getModAt(int index) {
+        return listOfMods.get(index);
+    }
+
+    public ArrayList<Modification> getListOfMods() {
         return listOfMods;
     }
 

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import org.junit.Test;
 
@@ -31,7 +32,7 @@ public class ModificationListTest {
                 + "00A57744\t0x1\t10 \t00 \n"
                 + "00A57746\t0x1\t00 \tB4 \n"
                 + "00A57749\t0x2\t1A BF \t0A 20 ");
-        LinkedList<Modification> mods = new LinkedList<Modification>();
+        ArrayList<Modification> mods = new ArrayList<Modification>();
         mods.add(mod1);
         mods.add(mod2);
         ModificationList expected = new ModificationList(mods);

@@ -1,6 +1,6 @@
 package doge.data;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,7 +16,7 @@ public class Modification {
             .compile(".*\\/{2}.*[\\s\\S]*?(?=\\n.*?\\/{2}|$)");
 
     private String modName;
-    private LinkedList<Patch> patches;
+    private ArrayList<Patch> patches;
 
     /**
      * Constructor
@@ -24,7 +24,7 @@ public class Modification {
      * @param modName the name of the modification
      * @param patches the list of Patch objects that the modification contains
      */
-    public Modification(String modName, LinkedList<Patch> patches) {
+    public Modification(String modName, ArrayList<Patch> patches) {
         this.modName = modName;
         this.patches = patches;
     }
@@ -39,7 +39,7 @@ public class Modification {
         String[] lines = block.split(LF);
         String parsedMdName = lines[MOD_NAME_INDEX];
 
-        LinkedList<Patch> patches = new LinkedList<Patch>();
+        ArrayList<Patch> patches = new ArrayList<Patch>();
         Matcher functionBlockMatcher = FUNCTION_PATCH_BLOCK_REGEX.matcher(block);
         while (functionBlockMatcher.find()) {
             patches.addAll(Modification.parsePatches(functionBlockMatcher.group(0)));
@@ -57,12 +57,12 @@ public class Modification {
      * @param block a string that contains multiple patches
      * @return a LinkedList of Patch objects
      */
-    public static LinkedList<Patch> parsePatches(String block) {
+    public static ArrayList<Patch> parsePatches(String block) {
         if (block.matches(FUNCTION_PATCH_BLOCK_REGEX.pattern())) {
             String[] lines = block.split(LF);
 
             Function function = Function.parseFunction(lines[FUNCTION_HEADER_INDEX]);
-            LinkedList<Patch> patches = new LinkedList<Patch>();
+            ArrayList<Patch> patches = new ArrayList<Patch>();
             for (int i = FUNCTION_HEADER_INDEX + 1; i < lines.length; i++) {
                 patches.add(Patch.parsePatch(lines[i], function));
             }
@@ -76,7 +76,7 @@ public class Modification {
         return modName;
     }
 
-    public LinkedList<Patch> getPatches() {
+    public ArrayList<Patch> getPatches() {
         return patches;
     }
 

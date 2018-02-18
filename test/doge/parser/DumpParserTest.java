@@ -29,7 +29,6 @@ public class DumpParserTest {
         DumpParser dp = new DumpParser("tempEmptyTestFile", getTestModList());
         HashMap<String, Function> hm = new HashMap<String, Function>();
 
-        dp.initialize();
         hm.put("public int get_ActivateLimit()",
                 Function.parseFunction("public int get_ActivateLimit(); // 0x1170AAC\n"));
         hm.put("public float get_CoolTime()",
@@ -45,8 +44,6 @@ public class DumpParserTest {
     public void testAddFunction() throws IOException {
         File f = new File("tempEmptyTestFile");
         f.createNewFile();
-
-        f.delete();
 
         DumpParser dp = new DumpParser("tempEmptyTestFile", getTestModList());
         HashMap<String, Function> hm = new HashMap<String, Function>();
