@@ -4,6 +4,9 @@ import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Contain a list of Patches
+ */
 public class Modification {
 
     public static final String LF = "\n";
@@ -15,11 +18,23 @@ public class Modification {
     private String modName;
     private LinkedList<Patch> patches;
 
-    public Modification(String modName, LinkedList<Patch> patches) {
+    /**
+     * Constructor
+     *
+     * @param modName the name of the modification
+     * @param patches the list of Patch objects that the modification contains
+     */
+    Modification(String modName, LinkedList<Patch> patches) {
         this.modName = modName;
         this.patches = patches;
     }
 
+    /**
+     * Return a Modification object from given string
+     *
+     * @param block a string that contains the modification
+     * @return the Modification object
+     */
     public static Modification parseMod(String block) {
         String[] lines = block.split(LF);
         String parsedMdName = lines[MOD_NAME_INDEX];
@@ -36,6 +51,12 @@ public class Modification {
         }
     }
 
+    /**
+     * Return a list of Patch objects from given string
+     *
+     * @param block a string that contains multiple patches
+     * @return a LinkedList of Patch objects
+     */
     public static LinkedList<Patch> parsePatches(String block) {
         if (block.matches(FUNCTION_PATCH_BLOCK_REGEX.pattern())) {
             String[] lines = block.split(LF);

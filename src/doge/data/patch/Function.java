@@ -3,6 +3,9 @@ package doge.data.patch;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Store data of a C++ function / method.
+ */
 public class Function {
 
     public static final Pattern FUNCTION_NAME_REGEX = Pattern.compile("\\s*(.*\\(.*\\).*?);");
@@ -13,11 +16,23 @@ public class Function {
     private String functionName;
     private int functionOffset;
 
+    /**
+     * Constructor
+     *
+     * @param functionName name of the function
+     * @param functionOffset start address of the function
+     */
     Function(String functionName, int functionOffset) {
         this.functionName = functionName;
         this.functionOffset = functionOffset;
     }
 
+    /**
+     * Return a Function object given a function string (line)
+     *
+     * @param line the function string
+     * @return a Function object, or null if no Function object to return
+     */
     public static Function parseFunction(String line) {
         String parsedName = Function.parseFunctionName(line);
         int parsedAddress = Function.parseFunctionAddress(line);
@@ -33,8 +48,7 @@ public class Function {
      * Return a function name from a string
      *
      * @param line a string that might contain a method
-     * @return a function name if the string is valid, else a given default
-     * return value
+     * @return a function name if the string is valid, else a given default return value
      */
     public static String parseFunctionName(String line) {
         Matcher functionNameMatcher = FUNCTION_NAME_REGEX.matcher(line);
@@ -49,8 +63,7 @@ public class Function {
      * Return the start address of a function
      *
      * @param line a string that might contain a method
-     * @return the start address of a function if the string is valid, else a
-     * given default return value
+     * @return the start address of a function if the string is valid, else a given default return value
      */
     public static int parseFunctionAddress(String line) {
         Matcher functionAddressMatcher = FUNCTION_ADDRESS_REGEX.matcher(line);
