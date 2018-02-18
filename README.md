@@ -1,2 +1,2 @@
-# AliceGearAegisMod
-A mod for the game アリス・ギア・アイギス
+# README
+This is a readme
