@@ -23,10 +23,12 @@ public class DumpParser {
      *
      * @param filePath filePath of dump.cs file
      */
-    DumpParser(String filePath, ModificationList listOfMods) {
+    public DumpParser(String filePath, ModificationList listOfMods) {
         this.filePath = filePath;
         this.map = new HashMap<String, Function>();
         this.listOfMods = listOfMods;
+
+        initialize();
     }
 
     /**

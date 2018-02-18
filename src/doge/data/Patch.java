@@ -28,7 +28,7 @@ public class Patch {
      * @param originalBytes the original byte sequence, used for validity checking
      * @param newBytes the new byte sequence
      */
-    Patch(Function function, int offset, int length, byte[] originalBytes, byte[] newBytes) {
+    public Patch(Function function, int offset, int length, byte[] originalBytes, byte[] newBytes) {
         this.function = function;
         this.offset = offset;
         this.length = length;

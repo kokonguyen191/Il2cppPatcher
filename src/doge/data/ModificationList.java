@@ -18,7 +18,7 @@ public class ModificationList {
      *
      * @param listOfMods a LinkedList of Modification objects
      */
-    ModificationList(LinkedList<Modification> listOfMods) {
+    public ModificationList(LinkedList<Modification> listOfMods) {
         this.listOfMods = listOfMods;
     }
 

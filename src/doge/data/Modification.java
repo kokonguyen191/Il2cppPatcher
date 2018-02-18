@@ -24,7 +24,7 @@ public class Modification {
      * @param modName the name of the modification
      * @param patches the list of Patch objects that the modification contains
      */
-    Modification(String modName, LinkedList<Patch> patches) {
+    public Modification(String modName, LinkedList<Patch> patches) {
         this.modName = modName;
         this.patches = patches;
     }

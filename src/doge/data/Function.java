@@ -22,7 +22,7 @@ public class Function {
      * @param functionName name of the function
      * @param functionOffset start address of the function
      */
-    Function(String functionName, int functionOffset) {
+    public Function(String functionName, int functionOffset) {
         this.functionName = functionName;
         this.functionOffset = functionOffset;
     }
