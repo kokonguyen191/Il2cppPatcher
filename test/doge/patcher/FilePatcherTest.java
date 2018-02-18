@@ -2,24 +2,21 @@ package doge.patcher;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import doge.data.Function;
+import doge.data.Modification;
 import doge.data.Patch;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.HashMap;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 public class FilePatcherTest {
 
     @Test
-    public void testWritePatch() throws IOException {
+    public void testWriteAndRevertAllPatchesInOneMod() throws Exception {
         File f = new File("tempEmptyTestFile");
         f.createNewFile();
 
@@ -28,26 +25,134 @@ public class FilePatcherTest {
                 (byte) 0x16, (byte) 0x17, (byte) 0x18};
         fos.write(bytes);
         fos.flush();
+        fos.close();
 
-        byte[] changeBytes = {(byte) 0xf0, (byte) 0xf1, (byte) 0xf2};
+        HashMap<String, Function> hm = new HashMap<String, Function>();
+        Function func1 = Function.parseFunction("test1(); // 0x0");
+        Function func2 = Function.parseFunction("test2(); // 0x4");
+        hm.put("test1()", func1);
+        hm.put("test2()", func2);
+        Modification mod = Modification.parseMod("Test\n"
+                + "test1(); // 0x0\n"
+                + "01\t0x1\t12 \tFF\n"
+                + "test2(); // 0x5\n"
+                + "07\t0x2\t17 18\tFE FD");
         RandomAccessFile fh = new RandomAccessFile(f, "rw");
-        FilePatcher.writePatch(fh, 4, changeBytes);
+        FilePatcher.writeAllPatchesInOneMod(fh, hm, mod);
+        fh.close();
 
         FileInputStream fis = new FileInputStream(f);
         fis.read(bytes);
-
-        byte[] newBytes = {(byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0xf0,
-                (byte) 0xf1, (byte) 0xf2, (byte) 0x18};
-
-        assertArrayEquals(newBytes, bytes);
-
-        fh.close();
         fis.close();
-        fos.close();
+
+        assertArrayEquals(
+                new byte[]{(byte) 0x11, (byte) 0xFF, (byte) 0x13, (byte) 0x14, (byte) 0x15,
+                        (byte) 0x16, (byte) 0xFE, (byte) 0xFD}, bytes);
+
+        fh = new RandomAccessFile(f, "rw");
+        FilePatcher.revertAllPatchesInOneMod(fh, hm, mod);
+        fh.close();
+
+        fis = new FileInputStream(f);
+        fis.read(bytes);
+        fis.close();
+
+        assertArrayEquals(
+                new byte[]{(byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15,
+                        (byte) 0x16, (byte) 0x17, (byte) 0x18}, bytes);
 
         f.delete();
-
     }
+
+    @Test
+    public void testWriteAndRevertPatch() throws Exception {
+        File f = new File("tempEmptyTestFile");
+        f.createNewFile();
+
+        FileOutputStream fos = new FileOutputStream(f);
+        byte[] bytes = {(byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15,
+                (byte) 0x16, (byte) 0x17, (byte) 0x18};
+        fos.write(bytes);
+        fos.flush();
+        fos.close();
+
+        HashMap<String, Function> hm = new HashMap<String, Function>();
+        Function function = Function.parseFunction("test(); // 0x0");
+        hm.put("test()", function);
+        Patch validPatch = Patch.parsePatch("00000001\t0x2\t12 13 \tFF FE ", function);
+        RandomAccessFile fh = new RandomAccessFile(f, "rw");
+        FilePatcher.writePatch(fh, hm, validPatch);
+        fh.close();
+
+        FileInputStream fis = new FileInputStream(f);
+        fis.read(bytes);
+        fis.close();
+
+        assertArrayEquals(
+                new byte[]{(byte) 0x11, (byte) 0xFF, (byte) 0xFE, (byte) 0x14, (byte) 0x15,
+                        (byte) 0x16, (byte) 0x17, (byte) 0x18}, bytes);
+
+        fh = new RandomAccessFile(f, "rw");
+        FilePatcher.revertPatch(fh, hm, validPatch);
+        fh.close();
+
+        fis = new FileInputStream(f);
+        fis.read(bytes);
+        fis.close();
+
+        assertArrayEquals(
+                new byte[]{(byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15,
+                        (byte) 0x16, (byte) 0x17, (byte) 0x18}, bytes);
+
+        System.out.println("=== EXPECTED OUTPUT ===");
+        System.out.println(
+                "Patch and libil2cpp binary does not match! At 0x00000001, patch has FF while file has 12\n"
+                        + "Patch and libil2cpp binary does not match! At 0x00000002, patch has 69 while file has 13");
+        System.out.println("=== ACTUAL OUTPUT ===");
+        Patch invalidPatch = Patch.parsePatch("00000001\t0x2\t00 00 \tFF 69 ", function);
+        fh = new RandomAccessFile(f, "rw");
+        FilePatcher.writePatch(fh, hm, invalidPatch);
+        fh.close();
+
+        fis = new FileInputStream(f);
+        fis.read(bytes);
+        fis.close();
+
+        assertArrayEquals(
+                new byte[]{(byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15,
+                        (byte) 0x16, (byte) 0x17, (byte) 0x18}, bytes);
+
+        f.delete();
+    }
+
+    @Test
+    public void testWriteBytes() throws Exception {
+        File f = new File("tempEmptyTestFile");
+        f.createNewFile();
+
+        FileOutputStream fos = new FileOutputStream(f);
+        byte[] bytes = {(byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15,
+                (byte) 0x16, (byte) 0x17, (byte) 0x18};
+        fos.write(bytes);
+        fos.flush();
+        fos.close();
+
+        byte[] newBytes = {(byte) 0xF2, (byte) 0xF3, (byte) 0xF4};
+        RandomAccessFile fh = new RandomAccessFile(f, "rw");
+        FilePatcher.writeBytes(fh, 2, newBytes);
+        fh.close();
+
+        FileInputStream fis = new FileInputStream(f);
+        fis.read(bytes);
+        fis.close();
+
+        assertArrayEquals(
+                new byte[]{(byte) 0x11, (byte) 0x12, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4,
+                        (byte) 0x16, (byte) 0x17, (byte) 0x18}, bytes);
+
+        f.delete();
+    }
+
 
     @Test
     public void testGetNewOffset() {

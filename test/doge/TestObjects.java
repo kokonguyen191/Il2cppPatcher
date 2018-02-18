@@ -1,4 +1,6 @@
-package doge.data;
+package doge;
+
+import doge.data.ModificationList;
 
 public class TestObjects {
 

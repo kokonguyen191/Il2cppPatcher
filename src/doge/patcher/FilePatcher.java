@@ -3,6 +3,7 @@ package doge.patcher;
 import doge.data.Function;
 import doge.data.Modification;
 import doge.data.Patch;
+import doge.parser.FileVerifier;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
@@ -20,10 +21,18 @@ public class FilePatcher {
     public static void writeAllPatchesInOneMod(RandomAccessFile fh,
             HashMap<String, Function> listOfNewFunctions, Modification mod)
             throws IOException {
-        ArrayList<Patch> patches = mod.getPatches();
-        for (Patch patch : patches) {
-            int newOffset = FilePatcher.getNewOffset(listOfNewFunctions, patch);
-            FilePatcher.writePatch(fh, newOffset, patch.getNewBytes());
+        boolean fileAndNewModMatched = FileVerifier
+                .isFileAndNewModMatched(fh, listOfNewFunctions, mod);
+        boolean fileAndOldModMatched = FileVerifier
+                .isFileAndOldModMatched(fh, listOfNewFunctions, mod);
+
+        if (fileAndNewModMatched || fileAndOldModMatched) {
+            ArrayList<Patch> patches = mod.getPatches();
+            for (Patch patch : patches) {
+                FilePatcher.writePatch(fh, listOfNewFunctions, patch);
+            }
+        } else {
+            FileVerifier.printModMismatch(mod);
         }
     }
 
@@ -37,10 +46,62 @@ public class FilePatcher {
     public static void revertAllPatchesInOneMod(RandomAccessFile fh,
             HashMap<String, Function> listOfNewFunctions, Modification mod)
             throws IOException {
-        ArrayList<Patch> patches = mod.getPatches();
-        for (Patch patch : patches) {
-            int newOffset = FilePatcher.getNewOffset(listOfNewFunctions, patch);
-            FilePatcher.writePatch(fh, newOffset, patch.getOriginalBytes());
+        boolean fileAndNewModMatched = FileVerifier
+                .isFileAndNewModMatched(fh, listOfNewFunctions, mod);
+        boolean fileAndOldModMatched = FileVerifier
+                .isFileAndOldModMatched(fh, listOfNewFunctions, mod);
+
+        if (fileAndNewModMatched || fileAndOldModMatched) {
+            ArrayList<Patch> patches = mod.getPatches();
+            for (Patch patch : patches) {
+                FilePatcher.revertPatch(fh, listOfNewFunctions, patch);
+            }
+        } else {
+            FileVerifier.printModMismatch(mod);
+        }
+    }
+
+    /**
+     * Enable a patch
+     *
+     * @param fh RandomAccessFile for better performance
+     * @param listOfNewFunctions can be gotten from a DumpParser
+     * @param patch the Patch object
+     */
+    public static void writePatch(RandomAccessFile fh,
+            HashMap<String, Function> listOfNewFunctions, Patch patch) throws IOException {
+        boolean fileAndNewPatchMatched = FileVerifier
+                .isFileAndNewPatchMatched(fh, listOfNewFunctions, patch);
+        boolean fileAndOldPatchMatched = FileVerifier
+                .isFileAndOldPatchMatched(fh, listOfNewFunctions, patch);
+
+        int newOffset = FilePatcher.getNewOffset(listOfNewFunctions, patch);
+        if (fileAndNewPatchMatched || fileAndOldPatchMatched) {
+            FilePatcher.writeBytes(fh, newOffset, patch.getNewBytes());
+        } else {
+            FileVerifier.printMismatchBytes(fh, newOffset, patch.getLength(), patch.getNewBytes());
+        }
+    }
+
+    /**
+     * Disable a patch
+     *
+     * @param fh RandomAccessFile for better performance
+     * @param listOfNewFunctions can be gotten from a DumpParser
+     * @param patch the Patch object
+     */
+    public static void revertPatch(RandomAccessFile fh,
+            HashMap<String, Function> listOfNewFunctions, Patch patch) throws IOException {
+        boolean fileAndNewPatchMatched = FileVerifier
+                .isFileAndNewPatchMatched(fh, listOfNewFunctions, patch);
+        boolean fileAndOldPatchMatched = FileVerifier
+                .isFileAndOldPatchMatched(fh, listOfNewFunctions, patch);
+
+        int newOffset = FilePatcher.getNewOffset(listOfNewFunctions, patch);
+        if (fileAndNewPatchMatched || fileAndOldPatchMatched) {
+            FilePatcher.writeBytes(fh, newOffset, patch.getOriginalBytes());
+        } else {
+            FileVerifier.printMismatchBytes(fh, newOffset, patch.getLength(), patch.getNewBytes());
         }
     }
 
@@ -62,12 +123,12 @@ public class FilePatcher {
      *
      * @param fh RandomAccessFile for better performance
      * @param location starting location of the patch
-     * @param patch series of bytes
+     * @param bytes series of bytes
      */
-    public static void writePatch(RandomAccessFile fh, int location, byte[] patch)
+    public static void writeBytes(RandomAccessFile fh, int location, byte[] bytes)
             throws IOException {
         fh.seek(location);
-        fh.write(patch);
+        fh.write(bytes);
     }
 
 }

@@ -1,6 +1,6 @@
 package doge.parser;
 
-import static doge.data.TestObjects.getTestModList;
+import static doge.TestObjects.getTestModList;
 import static org.junit.Assert.assertEquals;
 
 import doge.data.Function;

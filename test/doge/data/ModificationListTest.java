@@ -1,12 +1,11 @@
 package doge.data;
 
-import static doge.data.TestObjects.getTestModList;
+import static doge.TestObjects.getTestModList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import org.junit.Test;
 
 public class ModificationListTest {

@@ -50,11 +50,39 @@ public class FileVerifier {
             boolean fileAndPatchMatch = FileVerifier
                     .isFileAndOldPatchMatched(fh, listOfNewFunctions, patch);
             if (!fileAndPatchMatch) {
-                System.out.println("Mismatch at mod option: " + mod.getModName());
                 return false;
             }
         }
         return true;
+    }
+
+    /**
+     * Check if the file matches the desired state after applying a mod
+     *
+     * @param fh RandomAccessFile for better performance
+     * @param listOfNewFunctions can be gotten from DumpParser
+     * @param mod a Modification object
+     * @return true if they match, else false
+     */
+    public static boolean isFileAndNewModMatched(RandomAccessFile fh,
+            HashMap<String, Function> listOfNewFunctions, Modification mod) throws IOException {
+        for (Patch patch : mod.getPatches()) {
+            boolean fileAndPatchMatch = FileVerifier
+                    .isFileAndNewPatchMatched(fh, listOfNewFunctions, patch);
+            if (!fileAndPatchMatch) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Print the mismatch message for mod
+     *
+     * @param mod a Modification mod that went wrong
+     */
+    public static void printModMismatch(Modification mod) {
+        System.out.println("Mismatch at mod option: " + mod.getModName());
     }
 
     /**
@@ -103,12 +131,32 @@ public class FileVerifier {
         for (int i = 0; i < length; i++) {
             byte nextByte = fh.readByte();
             if (nextByte != bytes[i]) {
-                System.out.println(String.format(
-                        "Patch and libil2cpp binary does not match! At 0x%08X, patch has %02X while file has %02X",
-                        location + i, bytes[i], nextByte));
                 return false;
             }
         }
         return true;
+    }
+
+    /**
+     * Print the mismatch message for bytes
+     *
+     * @param fh RandomAccessFile for better performance
+     * @param location starting location of the check
+     * @param length the length of the check
+     * @param bytes the series of byte to check
+     * @return true if they match, else false
+     */
+    public static void printMismatchBytes(RandomAccessFile fh, int location, int length,
+            byte[] bytes)
+            throws IOException {
+        fh.seek(location);
+        for (int i = 0; i < length; i++) {
+            byte nextByte = fh.readByte();
+            if (nextByte != bytes[i]) {
+                System.out.println(String.format(
+                        "Patch and libil2cpp binary does not match! At 0x%08X, patch has %02X while file has %02X",
+                        location + i, bytes[i], nextByte));
+            }
+        }
     }
 }
