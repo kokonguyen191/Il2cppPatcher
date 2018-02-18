@@ -1,4 +1,4 @@
-package doge.data.patch;
+package doge.data;
 
 import java.util.LinkedList;
 import java.util.regex.Matcher;

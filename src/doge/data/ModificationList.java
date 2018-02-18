@@ -1,4 +1,4 @@
-package doge.data.patch;
+package doge.data;
 
 import java.util.HashSet;
 import java.util.LinkedList;
