@@ -1,0 +1,31 @@
+#
+Infinite skill usage
+public int get_ActivateLimit(); // 0xA58E80
+00A58F27	0x1	0A 	EA
+#
+No skill cool down
+public float get_CoolTime(); // 0xA57688
+00A57744	0x1	10 	00 
+00A57746	0x1	00 	B4 
+00A57749	0x2	1A BF 	0A 20 
+#
+No skill activation time
+public float get_EffectTime(); // 0xB1CA3C
+00B1CAF8	0x1	10 	00 
+00B1CAFA	0x1	00 	B4 
+00B1CAFD	0x2	1A BF 	0A 20 
+#
+No SP required
+public float get_SkillPointNormalizedRatio(); // 0x97AC94
+0097AD34	0x1	08 	00
+0097AD36	0x1	89 	B7
+#
+Godmode
+public void Shot(UnitBase sender, UnitActionLockOnOwnerType lockOnOwnerType, int shotIdx, int commandIdx, float limitAngle, bool deviation); // 0x11630C8
+011630C8	0x4	F0 4F 2D E9 	1E FF 2F E1 
+public void Shot(UnitBase sender, UnitActionLockOnOwnerType lockOnOwnerType, int shotIdx, int commandIdx, float limitAngle, bool deviation, Vector3 offsetPosition, Quaternion offsetRotation, float effectScale); // 0x115ED90
+0115ED90	0x4	F0 4F 2D E9 	1E FF 2F E1 
+#
+Big damage
+public float CalcDamage(BulletBase bullet); // 0x11725F4
+011725F4	0x8	F0 48 2D E9 10 B0 8D E2 	7F 04 B0 E3 1E FF 2F E1 
