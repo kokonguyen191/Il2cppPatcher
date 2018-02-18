@@ -13,23 +13,24 @@ public class DumpParserTest {
 	@Test
 	public void testParseFunctionName() {
 		// Normal function
-		assertEquals("overrideResistIcons", DumpParser
+		assertEquals("private static void overrideResistIcons(EnemyParams targetParams)", DumpParser
 				.parseFunctionName("private static void overrideResistIcons(EnemyParams targetParams); // 0x117BC04"));
 
 		// Not a function
 		assertEquals("", DumpParser.parseFunctionName("public const ShieldType Leftward = 5; // 0x0"));
 
 		// Another function
-		assertEquals("assignIfValid", DumpParser
+		assertEquals("private static bool assignIfValid(string result, string value)", DumpParser
 				.parseFunctionName("private static bool assignIfValid(string result, string value); // 0x117DD5C"));
 
 		// Function with some weird chars
-		assertEquals("get_childUnits",
+		assertEquals("public List`1<UnitBase> get_childUnits()",
 				DumpParser.parseFunctionName("public List`1<UnitBase> get_childUnits(); // 0x2065DE8"));
 
 		// Very weird function and has some extra spaces at the start
-		assertEquals("getListValue", DumpParser.parseFunctionName(
-				"	private static float getListValue(List`1<float> values, int index, optional float defaultValue); // 0x1F741DC\r\n"));
+		assertEquals("private static float getListValue(List`1<float> values, int index, optional float defaultValue)",
+				DumpParser.parseFunctionName(
+						"	private static float getListValue(List`1<float> values, int index, optional float defaultValue); // 0x1F741DC\r\n"));
 	}
 
 	@Test
@@ -61,13 +62,14 @@ public class DumpParserTest {
 
 		DumpParser dp = new DumpParser("tempEmptyTestFile");
 		HashMap<Integer, String> hm = new HashMap<Integer, String>();
-		dp.functionsNeeded.add("overrideResistIcons");
-		dp.functionsNeeded.add("get_childUnits");
-		dp.functionsNeeded.add("getListValue");
+		dp.functionsNeeded.add("private static void overrideResistIcons(EnemyParams targetParams)");
+		dp.functionsNeeded.add("public List`1<UnitBase> get_childUnits()");
+		dp.functionsNeeded
+				.add("private static float getListValue(List`1<float> values, int index, optional float defaultValue)");
 
 		// Normal function
 		dp.addFunction("private static void overrideResistIcons(EnemyParams targetParams); // 0x117BC04");
-		hm.put(0x117BC04, "overrideResistIcons");
+		hm.put(0x117BC04, "private static void overrideResistIcons(EnemyParams targetParams)");
 		assertEquals(hm, dp.getMap());
 
 		// Not a function
@@ -80,13 +82,14 @@ public class DumpParserTest {
 
 		// Another function
 		dp.addFunction("public List`1<UnitBase> get_childUnits(); // 0x2065DE8");
-		hm.put(0x2065DE8, "get_childUnits");
+		hm.put(0x2065DE8, "public List`1<UnitBase> get_childUnits()");
 		assertEquals(hm, dp.getMap());
 
 		// A weird formatted function
 		dp.addFunction(
 				"        private static float getListValue(List`1<float> values, int index, optional float defaultValue); // 0x1F741DC\\r\\n");
-		hm.put(0x1F741DC, "getListValue");
+		hm.put(0x1F741DC,
+				"private static float getListValue(List`1<float> values, int index, optional float defaultValue)");
 		assertEquals(hm, dp.getMap());
 
 		f.delete();

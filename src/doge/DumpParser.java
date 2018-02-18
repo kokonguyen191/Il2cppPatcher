@@ -17,14 +17,13 @@ import java.util.regex.Pattern;
  */
 public class DumpParser {
 
-	private static final Pattern FUNCTION_NAME_REGEX = Pattern.compile("(?:^.* \\s*(.*))(?=\\()");
+	private static final Pattern FUNCTION_NAME_REGEX = Pattern.compile("\\s*(.*\\(.*\\).*?);");
 	private static final Pattern FUNCTION_ADDRESS_REGEX = Pattern.compile("(?<=\\/\\/ 0x)[\\dA-F]*");
 	private static final String FUNCTION_NAME_NOT_FOUND_DEFAULT_VALUE = "";
 	private static final int FUNCTION_ADDRESS_NOT_FOUND_DEFAULT_VALUE = -1;
 	private static final String DEFAULT_DUMP_FILE_PATH = "dump.cs";
 
 	private String filePath;
-	private BufferedReader br;
 	private HashMap<Integer, String> map;
 	public HashSet<String> functionsNeeded;
 
@@ -63,12 +62,15 @@ public class DumpParser {
 	 * Add all function names needed to mod into functionsNeeded Set
 	 */
 	public void populateFunctionsNeeded() {
-		functionsNeeded.add("get_ActivateLimit");
-		functionsNeeded.add("get_CoolTime");
-		functionsNeeded.add("get_EffectTime");
-		functionsNeeded.add("get_SkillPointNormalizedRatio");
-		functionsNeeded.add("CalcDamage");
-		functionsNeeded.add("Shot");
+		functionsNeeded.add("public int get_ActivateLimit()");
+		functionsNeeded.add("public float get_CoolTime()");
+		functionsNeeded.add("public float get_EffectTime()");
+		functionsNeeded.add("public float get_SkillPointNormalizedRatio()");
+		functionsNeeded.add("public float CalcDamage(BulletBase bullet)");
+		functionsNeeded.add(
+				"public void Shot(UnitBase sender, UnitActionLockOnOwnerType lockOnOwnerType, int shotIdx, int commandIdx, float limitAngle, bool deviation)");
+		functionsNeeded.add(
+				"public void Shot(UnitBase sender, UnitActionLockOnOwnerType lockOnOwnerType, int shotIdx, int commandIdx, float limitAngle, bool deviation, Vector3 offsetPosition, Quaternion offsetRotation, float effectScale)");
 	}
 
 	/**
@@ -101,7 +103,7 @@ public class DumpParser {
 		int functionAddress = DumpParser.parseFunctionAddress(line);
 
 		if (functionsNeeded.contains(functionName)) {
-			getMap().put(functionAddress, functionName);
+			map.put(functionAddress, functionName);
 		}
 	}
 
@@ -144,7 +146,6 @@ public class DumpParser {
 		}
 	}
 
-	
 	public HashMap<Integer, String> getMap() {
 		return map;
 	}
