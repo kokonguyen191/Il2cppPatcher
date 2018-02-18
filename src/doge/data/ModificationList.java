@@ -27,7 +27,7 @@ public class ModificationList {
     public ModificationList(ArrayList<Modification> listOfMods) {
         this.listOfMods = listOfMods;
         listOfFunctions = new HashSet<String>();
-        for (Modification mod: listOfMods) {
+        for (Modification mod : listOfMods) {
             ArrayList<Patch> patches = mod.getPatches();
             for (Patch patch : patches) {
                 listOfFunctions.add(patch.getFunction().getFunctionName());

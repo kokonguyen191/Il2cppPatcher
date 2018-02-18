@@ -9,12 +9,11 @@ import java.io.RandomAccessFile;
 
 public class Main {
 
-    private DumpParser dp;
-    private ModificationList listOfMods;
-
     private static final int IL2CPP_INDEX = 0;
     private static final int DUMP_INDEX = 1;
     private static final int MOD_INDEX = 2;
+    private DumpParser dp;
+    private ModificationList listOfMods;
 
     public static void main(String... launchArgs) {
         new Main().run(launchArgs);

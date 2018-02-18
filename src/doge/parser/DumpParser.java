@@ -35,7 +35,8 @@ public class DumpParser {
      */
     public void initialize() {
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
+            BufferedReader br = new BufferedReader(
+                    new InputStreamReader(new FileInputStream(filePath)));
             populateMap(br);
             br.close();
         } catch (IOException e) {

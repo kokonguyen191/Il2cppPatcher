@@ -1,17 +1,15 @@
 package doge.parser;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import doge.data.Function;
 import doge.data.Modification;
 import doge.data.ModificationList;
 import doge.data.Patch;
 import doge.patcher.FilePatcher;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.HashMap;
 import org.junit.Test;

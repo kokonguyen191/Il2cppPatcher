@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact name="Il2cppPatcher">
+    <output-path>$PROJECT_DIR$/out/artifacts/Il2cppPatcher</output-path>
+    <root id="root">
+      <element id="archive" name="Il2cppPatcher.jar">
+        <element id="module-output" name="Il2cppPatcher" />
+        <element id="directory" name="META-INF">
+          <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
