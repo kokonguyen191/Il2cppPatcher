@@ -1,5 +1,10 @@
 package doge.data;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -8,6 +13,7 @@ import java.util.HashSet;
  */
 public class ModificationList {
 
+    public static final String LR = "\n";
     public static final String MOD_OPTION_DELIMITER_REGEX = "#[\\s]+";
 
     private ArrayList<Modification> listOfMods;
@@ -20,6 +26,30 @@ public class ModificationList {
      */
     public ModificationList(ArrayList<Modification> listOfMods) {
         this.listOfMods = listOfMods;
+    }
+
+    /**
+     * Constructor
+     *
+     * @param filePath file path of a txt file that contains all the modifications
+     */
+    public ModificationList(String filePath) {
+        try {
+            BufferedReader br = new BufferedReader(
+                    new InputStreamReader(new FileInputStream(new File(filePath))));
+            String line;
+            StringBuilder sb = new StringBuilder();
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+                sb.append(LR);
+            }
+            br.close();
+            this.listOfMods = ModificationList.parseListOfMods(sb.toString()).getListOfMods();
+        } catch (IOException ioe) {
+            System.err.println(
+                    "Something unexpected happened while trying to read from the mod file");
+            ioe.printStackTrace();
+        }
     }
 
     /**
