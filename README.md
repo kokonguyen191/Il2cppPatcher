@@ -42,7 +42,7 @@ You will need this to get a `dump.cs` file
 4. **Do make a backup of the libil2cpp.so file beforehand. The application will not create
 a backup for you**
 
-0. If you still don't understand, refer [here](https://github.com/kokonguyen191/Il2cppPatcher/issues/2) for a guide with screenshots.
+0. If you still don't understand, refer [here](https://github.com/kokonguyen191/Il2cppPatcher/issues/3) for a guide with screenshots.
 
 ### Mod file
 
