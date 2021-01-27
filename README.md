@@ -1,3 +1,5 @@
+## I'm no longer maintaining this tool.
+
 # IL2CPP Patcher
 
 A tool for Android modders who are too lazy to mod multiple versions of an app over and over again.
